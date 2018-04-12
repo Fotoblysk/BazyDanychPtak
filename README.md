@@ -1,5 +1,9 @@
 # BazyDanychPtak
 Projekt na zal baz danych.
+
+# CI
+http://80.211.241.169:8080/job/BazyZdanychCI/
+
 # Info
 - Ściągnięcie repo `git clone 'https://github.com/Fotoblysk/BazyDanychPtak'`
 - Aktualizacja repo na konkretnym branchu repo `git pull`
