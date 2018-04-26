@@ -1,0 +1,24 @@
+.navi-bar{
+  width: 100%;
+  background-color: #222;
+  color: white;
+  height: 60px;
+}
+
+.supress-link-style{
+  text-decoration: none;
+  color: white;
+}
+.inline{
+  padding-left:30px;
+  padding-right:30px;
+  line-height: 60px;
+  font-size: 16px;
+  display: inline-block;
+}
+.link{
+  cursor: pointer;
+}
+.tableLeft{
+  text-align: left;
+}
