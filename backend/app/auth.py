@@ -46,16 +46,18 @@ async def login(request):
     data = (await request.json())
     login = data["login"]
     password = data["password"]
-    cred_mock = {"menager": {"password": "pass", "rights": "menager"},
-                 "kucharz": {"password": "pass", "rights": "kucharz"}, 
-                 "kelner": {"password": "pass", "rights": "kelner"}}
+    cred_mock = {"menager1": {"password": "pass", "rights": "menager"}, # demo hack
+                 "kucharz1": {"password": "pass", "rights": "kucharz"}, 
+                 "kelner1": {"password": "pass", "rights": "kelner"}}
     print("lol")
+    print(login)
     if login in cred_mock and password == cred_mock[login]["password"]:
         tocken = jwt.encode({"login": login, "rights":
                              cred_mock[login]["rights"], "password": cred_mock[login]["password"]}, secret, algorithm='HS256')
         tockens.add(tocken)
         return web.json_response(
-            data={"status": "Ok", "tocken": tocken.decode()}
+            #data={"status": "Ok", "tocken": tocken.decode()}
+            data={"rights": cred_mock[login]["rights"], "status": "Ok", "tocken": tocken.decode(), "username": login} # demo hack
         )
     else:
         return web.json_response(

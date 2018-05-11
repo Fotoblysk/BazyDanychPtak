@@ -28,7 +28,7 @@ class LoggingWindow extends Component {
       return response.json()
     }).then( (response) => {
       if(response.status ===  "Ok"){
-        authStore.dispatch({type: "", jwt: response.tocken});
+        authStore.dispatch({type: "", jwt: response.tocken, rights: response.rights, username: response.username});
         this.setState({
           resp: response.status,
           jwt: authStore.getState().jwt

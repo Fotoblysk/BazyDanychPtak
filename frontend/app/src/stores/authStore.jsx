@@ -6,7 +6,7 @@ let authFn = (state=persistedState, action) => {
   if(action.jwt === undefined)
     return state;
   else
-    return Object.assign({}, {jwt: action.jwt});
+    return Object.assign({}, {jwt: action.jwt, rights: action.rights, username: action.username});
 }
 
 

@@ -22,7 +22,6 @@ class NLIApp extends Component {
     return (
         <div>
           <NaviBarNLI />
-
           <Route exact path="/nli/" component={HomeWindow} />
           <Route exact path="/nli/login" component={LoggingWindow} />
           <Route exact path="/nli/register" component={RegisterWindow} />

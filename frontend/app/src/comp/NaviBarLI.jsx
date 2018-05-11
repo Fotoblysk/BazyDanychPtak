@@ -61,9 +61,13 @@ class NaviBarLI extends Component {
             <Navbar.Collapse>
               <NaviButtonLIGenerator buttons={buttons} />
             <Nav pullRight>
-            <LinkContainer to={"/nli/"} onClick={logOut}>
-              <NavItem>LogOut</NavItem>
-            </LinkContainer>
+              <Navbar.Text>Zalogowano: {this.props.username}</Navbar.Text>
+              <LinkContainer to={"/li/settings"} onClick={logOut}>
+                <NavItem>Ustawienia</NavItem>
+              </LinkContainer>
+              <LinkContainer to={"/nli/"} onClick={logOut}>
+                <NavItem>LogOut</NavItem>
+              </LinkContainer>
             </Nav>
             </Navbar.Collapse>
           </Navbar>

@@ -6,9 +6,17 @@ const isLogged = () => {
   return false;
 }
 
+const getRights = () => { // demo hacked
+  return authStore.getState().rights;
+}
+
+const getUsername = () => { // demo hacked
+  return authStore.getState().username;
+}
+
 const logOut = () => {
   if(authStore.getState().jwt !== "")
     authStore.dispatch({type: "", jwt: ""});
 }
 
-export {isLogged, logOut};
+export {isLogged, logOut, getRights, getUsername}; // demo hacked
