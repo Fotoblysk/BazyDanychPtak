@@ -19,17 +19,6 @@
 .link{
   cursor: pointer;
 }
-.blue{
-  color: blue;
-}
 .tableLeft{
   text-align: left;
-}
-
-.centerO{
-  width: 100%;
-  text-align: center;
-}
-.centerI{
-  display: inline-block;
 }

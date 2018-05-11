@@ -26,20 +26,25 @@ class NaviBarLI extends Component {
     switch (rights) {
         case "menager": {
           return [
-            {txt: "Zamówienia", route: "/li/orders"}, {txt: "Dania", route: "/li/meals"},
-            {txt: "Pracownicy", route: "/li/employees"}, {txt: "Dostawy", route: "/li/deliveries"},
+            {txt: "Zamówienia", route: "/li/orders"},
+            {txt: "Dania", route: "/li/meals"},
+            {txt: "Pracownicy", route: "/li/employees"},
+            {txt: "Dostawy", route: "/li/deliveries"},
             {txt: "Magazyn", route: "/li/warehouses"}
           ];
         }
         case "kucharz": {
           return [
-            {txt: "Zamówienia", route: "/li/orders"}, {txt: "Dania", route: "/li/meals"},
-            {txt: "Dostawy", route: "/li/deliveries"}, {txt: "Magazyn", route: "/li/warehouses"}
+            {txt: "Zamówienia", route: "/li/orders"},
+            {txt: "Dania", route: "/li/meals"},
+            {txt: "Dostawy", route: "/li/deliveries"},
+            {txt: "Magazyn", route: "/li/warehouses"}
           ];
         }
         case "kelner": {
           return [
-            {txt: "Zamówienia", route: "/li/orders"}, {txt: "Dania", route: "/li/meals"}
+            {txt: "Zamówienia", route: "/li/orders"},
+            {txt: "Dania", route: "/li/meals"}
           ];
         }
     }
