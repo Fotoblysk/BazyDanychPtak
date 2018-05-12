@@ -6,6 +6,7 @@ class InfoWindow extends Component {
     return (
       <div>
         Coded by Łukasz Kaptur, Jakub Kuśka, Amadeusz Świerk.
+        This is project xDD.
       </div>
     );
   }
