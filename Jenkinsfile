@@ -4,12 +4,14 @@ node {
 	}
 	stage("Build"){
 		sh 'echo test Build'
-		docker-compose build
+		sh 'docker-compose build'
 	}
 
 	stage("Test"){
 		sh 'echo test Test'
-		docker-compose up -d
+		sh 'docker-compose up -d'
+		sh 'sleep 10s'
+		sh 'docker-compose down'
 	}
 
 	if(env.BRANCH_NAME == 'master'){
