@@ -3,6 +3,69 @@ import { withRouter } from "react-router";
 import PropTypes from "prop-types";
 import {Row, Col, Pager, Table, Modal, Button } from "react-bootstrap";
 
+class EmployeesDetails extends Component {
+
+  constructor(props) {
+    super(props);
+  }
+  
+  render() {
+    return (
+		  <div>
+        <Modal show={this.props.details} onHide={this.props.hide}>
+          <Modal.Header closeButton>
+            <Modal.Title>Szczegóły zamówienia</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+	    Dane:
+            <ul className="tableLeft">
+		<li>Nr.: 1</li>
+		<li>Imie: Jan:</li>
+		<li>Drugie Imie:  Adam</li>
+		<li>Nazwisko:  Kowalski</li>
+		<li>Pensja:  2000</li>
+		<li>Zatrudniono:  2017-05-11</li>
+		<li>Kraj:  Polska</li>
+		<li>Miasto:  Świdnica</li>
+		<li>Ulica:  Śliczna</li>
+		<li>Kod Pocztowy: 11-222</li>
+		<li>Rola: kelner</li>
+            </ul>
+            Zamówienia: 
+            <ul className="tableLeft">
+              <li><span className="link blue">1</span><br />Tu może bd krótki opis lub podpodpunkty</li>
+              <li><span className="link blue">2</span><br />Tu może bd krótki opis lub podpodpunkty</li>
+	    </ul>
+
+            Dane logowania: 
+            <ul className="tableLeft">
+              <li>1
+		<ul className="tableLeft">
+              		<li><span className="">Login</span>: jak</li>
+              		<li><span className="">email</span>: tararara@example.com</li>
+	    	</ul>
+	</li>
+               	{//<span className="link red">&#128465; ta ikonka bd dopiero widooczna w edycji</span> </li>
+	      }
+	    <li>2 <span className="link green">&#10003;</span>
+
+		<ul className="tableLeft">
+			<li><span className="">Login</span>: jak2</li>
+			<li><span className="">email</span>: tararara2@example.com</li>
+		</ul>
+</li>
+	    </ul>
+
+          </Modal.Body>
+          <Modal.Footer>
+            <Button bsStyle="warning" onClick={this.props.hide}>Zmień</Button>
+            <Button bsStyle="danger" onClick={this.props.hide}>Usuń</Button>
+          </Modal.Footer>
+        </Modal>
+		  </div>
+    );
+  }
+}
 
 class Employees extends Component {
   constructor(props) {
@@ -28,8 +91,7 @@ class Employees extends Component {
             <Button bsStyle="info" >Dodaj pracownika</Button>
 	    </div>
 	    </div>
-	    {//      <MealsDetails hide={this.hideDetails} details={this.state.details}/>
-	    }
+	    <EmployeesDetails hide={this.hideDetails} details={this.state.details}/>
 			<Table responsive hover>
 				<thead className="tableLeft">
 					<tr>

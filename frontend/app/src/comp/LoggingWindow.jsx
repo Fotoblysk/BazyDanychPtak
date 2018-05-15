@@ -50,6 +50,7 @@ class LoggingWindow extends Component {
     });
   }
 
+
   onPasswordChange = (e) => {
     this.setState({
       password: e.target.value
@@ -60,11 +61,11 @@ class LoggingWindow extends Component {
     return (
       <div>
         <form onSubmit={this.onSubmitClick}>
-          login:<br />
+          Login:<br />
           <input type="text" name="login" onChange={this.onLoginChange} /><br />
-          password:<br />
+          Hasło:<br />
           <input type="password" name="password" onChange={this.onPasswordChange} /><br />
-          <input type="submit" value="Submit" />
+          <input type="submit" value="Zatwierdź" />
         </form>
         {this.state.resp} <br />
         {this.state.jwt}

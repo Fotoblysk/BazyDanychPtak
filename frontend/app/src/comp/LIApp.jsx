@@ -8,6 +8,8 @@ import Meals from "./Meals.jsx";
 import Employees from "./Employees.jsx";
 import Deliveries from "./Deliveries.jsx";
 import Warehouses from "./Warehouses.jsx";
+import Settings from "./Settings.jsx";
+
 
 
 class LIApp extends Component {
@@ -30,7 +32,7 @@ class LIApp extends Component {
         <Route exact path="/li/employees" render={()=><Employees rights={rights} />} />
         <Route exact path="/li/deliveries" render={()=><Deliveries rights={rights} />} />
         <Route exact path="/li/warehouses" render={()=><Warehouses rights={rights} />} />
-        <Route exact path="/li/settings" render={()=><Warehouses rights={rights} />} />
+        <Route exact path="/li/settings" render={()=><Settings rights={rights} />} />
       </div>
     );
   }

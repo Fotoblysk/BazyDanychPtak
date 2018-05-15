@@ -7,6 +7,11 @@ import { logOut } from "../func/LoginTools.jsx";
 
 class NaviButtonLIGenerator extends Component {
   render() {
+    if (this.props.buttons == undefined){
+	logOut(); // hack
+        return (<Nav> </Nav>);
+    }
+
     const buttons = this.props.buttons.map((button, i) => 
           <LinkContainer key={i} to={button.route}>
             <NavItem key={i}>{button.txt}</NavItem>
@@ -53,7 +58,8 @@ class NaviBarLI extends Component {
   render() {
     const buttons = this.getButtons(this.props.rights);
     if (buttons == undefined)
-      logOut()
+      logOut();
+	console.log(buttons);
     return (
       <div>
         <Navbar inverse collapseOnSelect>

@@ -24,6 +24,18 @@ class RegisterWindow extends Component {
     });
   }
 
+  onIdChange = (e) => {
+    this.setState({
+      login: e.target.value
+    });
+  }
+
+  onRolaChange = (e) => {
+    this.setState({
+      rola: e.target.value
+    });
+  }
+
   onPasswordChange = (e) => {
     this.setState({
       password: e.target.value
@@ -39,8 +51,12 @@ class RegisterWindow extends Component {
   render() {
     return (
       <form onSubmit={this.onSubmitClick}>
+          Id pracownika:<br />
+          <input type="text" name="id" onChange={this.onIdChange} /><br />
         Login:<br />
         <input type="text" name="login" onChange={this.onLoginChange} /><br />
+        Rola:<br />
+        <input type="text" name="login" onChange={this.onRolaChange} /><br />
         Email:<br />
         <input type="text" name="email" onChange={this.onEmailChange} /><br />
         Password:<br />
