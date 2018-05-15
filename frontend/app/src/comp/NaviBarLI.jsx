@@ -52,6 +52,8 @@ class NaviBarLI extends Component {
 
   render() {
     const buttons = this.getButtons(this.props.rights);
+    if (buttons == undefined)
+      logOut()
     return (
       <div>
         <Navbar inverse collapseOnSelect>
