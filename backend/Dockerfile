@@ -1,4 +1,4 @@
-FROM python:3.5
+FROM python:latest
 ADD requirements.txt /
 RUN pip3 install -r /requirements.txt
-ENTRYPOINT python3.5 -u /app/run.py
+ENTRYPOINT python3 -u /app/run.py
