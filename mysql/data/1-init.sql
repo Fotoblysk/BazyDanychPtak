@@ -27,12 +27,21 @@ DROP TABLE IF EXISTS `bills`;
 CREATE TABLE `bills` (
   `idbill` int(11) NOT NULL AUTO_INCREMENT,
   `orders_idorders` int(11) NOT NULL,
-  `money` varchar(45) NOT NULL,
+  `money` decimal(6,2) NOT NULL,
   PRIMARY KEY (`idbill`,`orders_idorders`),
   KEY `fk_bills_orders1_idx` (`orders_idorders`),
   CONSTRAINT `fk_bills_orders1` FOREIGN KEY (`orders_idorders`) REFERENCES `orders` (`idorders`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `bills`
+--
+
+LOCK TABLES `bills` WRITE;
+/*!40000 ALTER TABLE `bills` DISABLE KEYS */;
+/*!40000 ALTER TABLE `bills` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `clients`
@@ -47,6 +56,15 @@ CREATE TABLE `clients` (
   PRIMARY KEY (`idclients`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `clients`
+--
+
+LOCK TABLES `clients` WRITE;
+/*!40000 ALTER TABLE `clients` DISABLE KEYS */;
+/*!40000 ALTER TABLE `clients` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `clients_has_orders`
@@ -67,6 +85,15 @@ CREATE TABLE `clients_has_orders` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Dumping data for table `clients_has_orders`
+--
+
+LOCK TABLES `clients_has_orders` WRITE;
+/*!40000 ALTER TABLE `clients_has_orders` DISABLE KEYS */;
+/*!40000 ALTER TABLE `clients_has_orders` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `credentials`
 --
 
@@ -79,11 +106,22 @@ CREATE TABLE `credentials` (
   `login` varchar(45) NOT NULL,
   `email` varchar(255) NOT NULL,
   `password_hash` varchar(32) NOT NULL,
+  `active` tinyint(1) NOT NULL,
   PRIMARY KEY (`idcredentials`,`employees_idemployees`),
   KEY `fk_credentials_employees1_idx` (`employees_idemployees`),
   CONSTRAINT `fk_credentials_employees1` FOREIGN KEY (`employees_idemployees`) REFERENCES `employees` (`idemployees`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `credentials`
+--
+
+LOCK TABLES `credentials` WRITE;
+/*!40000 ALTER TABLE `credentials` DISABLE KEYS */;
+INSERT INTO `credentials` VALUES (1,1,'janusz','janusz.kowalski@example.com','1a1dc91c907325c69271ddf0c944bc72',1);
+/*!40000 ALTER TABLE `credentials` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `deliveries`
@@ -98,11 +136,20 @@ CREATE TABLE `deliveries` (
   `booked` datetime NOT NULL,
   `arrive_time_estimation` datetime NOT NULL,
   `arrived` datetime DEFAULT NULL,
-  PRIMARY KEY (`iddeliveries`,`warehouses_idwarehouses`),
+  PRIMARY KEY (`iddeliveries`),
   KEY `fk_deliveries_warehouses1_idx` (`warehouses_idwarehouses`),
   CONSTRAINT `fk_deliveries_warehouses1` FOREIGN KEY (`warehouses_idwarehouses`) REFERENCES `warehouses` (`idwarehouses`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `deliveries`
+--
+
+LOCK TABLES `deliveries` WRITE;
+/*!40000 ALTER TABLE `deliveries` DISABLE KEYS */;
+/*!40000 ALTER TABLE `deliveries` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Temporary table structure for view `deliveries_details`
@@ -161,8 +208,18 @@ CREATE TABLE `employees` (
   KEY `fk_employees_employees_role1_idx` (`employees_role_idemployees_role`),
   KEY `salary_index` (`salary`),
   CONSTRAINT `fk_employees_employees_role1` FOREIGN KEY (`employees_role_idemployees_role`) REFERENCES `employees_role` (`idemployees_role`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `employees`
+--
+
+LOCK TABLES `employees` WRITE;
+/*!40000 ALTER TABLE `employees` DISABLE KEYS */;
+INSERT INTO `employees` VALUES (1,NULL,'Jan',NULL,'Kowalski','Polska','Swidnica','Sliczna','50-100',3000.00,'2012-12-31','123123123',NULL);
+/*!40000 ALTER TABLE `employees` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `employees_role`
@@ -177,6 +234,15 @@ CREATE TABLE `employees_role` (
   PRIMARY KEY (`idemployees_role`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `employees_role`
+--
+
+LOCK TABLES `employees_role` WRITE;
+/*!40000 ALTER TABLE `employees_role` DISABLE KEYS */;
+/*!40000 ALTER TABLE `employees_role` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Temporary table structure for view `emplyees_details`
@@ -235,23 +301,54 @@ DROP TABLE IF EXISTS `ingredients`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `ingredients` (
   `idingredients` int(11) NOT NULL AUTO_INCREMENT,
-  `deliveries_iddeliveries` int(11) DEFAULT NULL,
-  `meals_idmeals` int(11) DEFAULT NULL,
-  `warehouses_idwarehouses` int(11) DEFAULT NULL,
   `name` varchar(64) NOT NULL,
-  `exp_date` date DEFAULT NULL,
-  `ammount` varchar(45) DEFAULT NULL,
-  `unit` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`idingredients`),
-  KEY `fk_ingredients_deliveries1_idx` (`deliveries_iddeliveries`),
-  KEY `fk_ingredients_meals1_idx` (`meals_idmeals`),
-  KEY `fk_ingredients_warehouses1_idx` (`warehouses_idwarehouses`),
-  KEY `name_index` (`name`),
-  CONSTRAINT `fk_ingredients_deliveries1` FOREIGN KEY (`deliveries_iddeliveries`) REFERENCES `deliveries` (`iddeliveries`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `fk_ingredients_meals1` FOREIGN KEY (`meals_idmeals`) REFERENCES `meals` (`idmeals`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `fk_ingredients_warehouses1` FOREIGN KEY (`warehouses_idwarehouses`) REFERENCES `warehouses` (`idwarehouses`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  KEY `name_index` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ingredients`
+--
+
+LOCK TABLES `ingredients` WRITE;
+/*!40000 ALTER TABLE `ingredients` DISABLE KEYS */;
+/*!40000 ALTER TABLE `ingredients` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `ingredients_instance`
+--
+
+DROP TABLE IF EXISTS `ingredients_instance`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `ingredients_instance` (
+  `idingredients_instance` int(11) NOT NULL AUTO_INCREMENT,
+  `ingredients_idingredients` int(11) DEFAULT NULL,
+  `deliveries_iddeliveries` int(11) DEFAULT NULL,
+  `meals_idmeals` int(11) DEFAULT NULL,
+  `amount` decimal(12,2) DEFAULT NULL,
+  `unit` varchar(45) DEFAULT NULL,
+  `exp_date` date NOT NULL,
+  PRIMARY KEY (`idingredients_instance`),
+  KEY `fk_ingredients_instance_ingredients1_idx` (`ingredients_idingredients`),
+  KEY `fk_ingredients_instance_deliveries1_idx` (`deliveries_iddeliveries`),
+  KEY `fk_ingredients_instance_meals1_idx` (`meals_idmeals`),
+  CONSTRAINT `fk_ingredients_instance_deliveries1` FOREIGN KEY (`deliveries_iddeliveries`) REFERENCES `deliveries` (`iddeliveries`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_ingredients_instance_ingredients1` FOREIGN KEY (`ingredients_idingredients`) REFERENCES `ingredients` (`idingredients`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_ingredients_instance_meals1` FOREIGN KEY (`meals_idmeals`) REFERENCES `meals` (`idmeals`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ingredients_instance`
+--
+
+LOCK TABLES `ingredients_instance` WRITE;
+/*!40000 ALTER TABLE `ingredients_instance` DISABLE KEYS */;
+/*!40000 ALTER TABLE `ingredients_instance` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `meals`
@@ -263,9 +360,20 @@ DROP TABLE IF EXISTS `meals`;
 CREATE TABLE `meals` (
   `idmeals` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(45) NOT NULL,
+  `size` varchar(45) DEFAULT NULL,
+  `price` decimal(6,2) DEFAULT NULL,
   PRIMARY KEY (`idmeals`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `meals`
+--
+
+LOCK TABLES `meals` WRITE;
+/*!40000 ALTER TABLE `meals` DISABLE KEYS */;
+/*!40000 ALTER TABLE `meals` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Temporary table structure for view `meals_prev`
@@ -302,6 +410,15 @@ CREATE TABLE `orders` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Dumping data for table `orders`
+--
+
+LOCK TABLES `orders` WRITE;
+/*!40000 ALTER TABLE `orders` DISABLE KEYS */;
+/*!40000 ALTER TABLE `orders` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `orders_has_meals`
 --
 
@@ -318,6 +435,15 @@ CREATE TABLE `orders_has_meals` (
   CONSTRAINT `fk_orders_has_meals_orders1` FOREIGN KEY (`orders_idorders`) REFERENCES `orders` (`idorders`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `orders_has_meals`
+--
+
+LOCK TABLES `orders_has_meals` WRITE;
+/*!40000 ALTER TABLE `orders_has_meals` DISABLE KEYS */;
+/*!40000 ALTER TABLE `orders_has_meals` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `orders_parts`
@@ -341,6 +467,15 @@ CREATE TABLE `orders_parts` (
   CONSTRAINT `fk_orders_parts_orders1` FOREIGN KEY (`orders_idorders`) REFERENCES `orders` (`idorders`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `orders_parts`
+--
+
+LOCK TABLES `orders_parts` WRITE;
+/*!40000 ALTER TABLE `orders_parts` DISABLE KEYS */;
+/*!40000 ALTER TABLE `orders_parts` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Temporary table structure for view `orders_prev`
@@ -383,6 +518,15 @@ CREATE TABLE `payments` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Dumping data for table `payments`
+--
+
+LOCK TABLES `payments` WRITE;
+/*!40000 ALTER TABLE `payments` DISABLE KEYS */;
+/*!40000 ALTER TABLE `payments` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Temporary table structure for view `product_details`
 --
 
@@ -414,6 +558,15 @@ CREATE TABLE `rights` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Dumping data for table `rights`
+--
+
+LOCK TABLES `rights` WRITE;
+/*!40000 ALTER TABLE `rights` DISABLE KEYS */;
+/*!40000 ALTER TABLE `rights` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `tockens`
 --
 
@@ -429,8 +582,18 @@ CREATE TABLE `tockens` (
   KEY `fk_tockens_credentials1_idx` (`credentials_idcredentials`),
   KEY `expires_index` (`expires`),
   CONSTRAINT `fk_tockens_credentials1` FOREIGN KEY (`credentials_idcredentials`) REFERENCES `credentials` (`idcredentials`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `tockens`
+--
+
+LOCK TABLES `tockens` WRITE;
+/*!40000 ALTER TABLE `tockens` DISABLE KEYS */;
+INSERT INTO `tockens` VALUES (1,1,'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9','2017-01-01 09:10:10');
+/*!40000 ALTER TABLE `tockens` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Temporary table structure for view `warehouse_status`
@@ -464,6 +627,15 @@ CREATE TABLE `warehouses` (
   PRIMARY KEY (`idwarehouses`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `warehouses`
+--
+
+LOCK TABLES `warehouses` WRITE;
+/*!40000 ALTER TABLE `warehouses` DISABLE KEYS */;
+/*!40000 ALTER TABLE `warehouses` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Dumping events for database 'main'
@@ -626,4 +798,4 @@ CREATE TABLE `warehouses` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-05-18 10:18:19
+-- Dump completed on 2018-05-22  8:58:28
