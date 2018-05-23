@@ -2,7 +2,7 @@ CREATE DATABASE  IF NOT EXISTS `main` /*!40100 DEFAULT CHARACTER SET latin1 */;
 USE `main`;
 -- MySQL dump 10.13  Distrib 5.7.22, for Linux (x86_64)
 --
--- Host: localhost    Database: main
+-- Host: 80.211.244.222    Database: main
 -- ------------------------------------------------------
 -- Server version	5.7.22
 
@@ -31,7 +31,7 @@ CREATE TABLE `bills` (
   PRIMARY KEY (`idbill`,`orders_idorders`),
   KEY `fk_bills_orders1_idx` (`orders_idorders`),
   CONSTRAINT `fk_bills_orders1` FOREIGN KEY (`orders_idorders`) REFERENCES `orders` (`idorders`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -40,6 +40,7 @@ CREATE TABLE `bills` (
 
 LOCK TABLES `bills` WRITE;
 /*!40000 ALTER TABLE `bills` DISABLE KEYS */;
+INSERT INTO `bills` VALUES (1,1,123.00),(2,2,235.00),(3,3,34.00),(4,4,44.00),(5,5,87.00);
 /*!40000 ALTER TABLE `bills` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -54,7 +55,7 @@ CREATE TABLE `clients` (
   `idclients` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`idclients`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -63,6 +64,7 @@ CREATE TABLE `clients` (
 
 LOCK TABLES `clients` WRITE;
 /*!40000 ALTER TABLE `clients` DISABLE KEYS */;
+INSERT INTO `clients` VALUES (1,'Kordian Kaczmarek'),(2,'Zofia Bajgiel'),(3,'Krzyszfot Mocny'),(4,'Andrzej Piaseczny'),(5,'Kazimierz Staszewski');
 /*!40000 ALTER TABLE `clients` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -90,6 +92,7 @@ CREATE TABLE `clients_has_orders` (
 
 LOCK TABLES `clients_has_orders` WRITE;
 /*!40000 ALTER TABLE `clients_has_orders` DISABLE KEYS */;
+INSERT INTO `clients_has_orders` VALUES (1,1),(2,1);
 /*!40000 ALTER TABLE `clients_has_orders` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -110,7 +113,7 @@ CREATE TABLE `credentials` (
   PRIMARY KEY (`idcredentials`,`employees_idemployees`),
   KEY `fk_credentials_employees1_idx` (`employees_idemployees`),
   CONSTRAINT `fk_credentials_employees1` FOREIGN KEY (`employees_idemployees`) REFERENCES `employees` (`idemployees`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -119,7 +122,7 @@ CREATE TABLE `credentials` (
 
 LOCK TABLES `credentials` WRITE;
 /*!40000 ALTER TABLE `credentials` DISABLE KEYS */;
-INSERT INTO `credentials` VALUES (1,1,'janusz','janusz.kowalski@example.com','1a1dc91c907325c69271ddf0c944bc72',1);
+INSERT INTO `credentials` VALUES (1,1,'janusz','janusz.kowalski@example.com','1a1dc91c907325c69271ddf0c944bc72',1),(2,2,'bozena','bozena.janiak@example.com','1a1dc91c907325c69271ddf0c944bc72',1),(3,3,'maciej','maciej.tenczynski@example.com','1a1dc91c907325c69271ddf0c944bc72',1),(4,4,'zygmunt','zygmunt.stary@example.com','1a1dc91c907325c69271ddf0c944bc72',1),(5,5,'stanislaw','stanislaw.wojciechowski@excample.com','1a1dc91c907325c69271ddf0c944bc72',1);
 /*!40000 ALTER TABLE `credentials` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -133,13 +136,13 @@ DROP TABLE IF EXISTS `deliveries`;
 CREATE TABLE `deliveries` (
   `iddeliveries` int(11) NOT NULL AUTO_INCREMENT,
   `warehouses_idwarehouses` int(11) NOT NULL,
-  `booked` datetime NOT NULL,
+  `booked` bit(1) NOT NULL,
   `arrive_time_estimation` datetime NOT NULL,
-  `arrived` datetime DEFAULT NULL,
+  `arrived` bit(1) DEFAULT NULL,
   PRIMARY KEY (`iddeliveries`),
   KEY `fk_deliveries_warehouses1_idx` (`warehouses_idwarehouses`),
   CONSTRAINT `fk_deliveries_warehouses1` FOREIGN KEY (`warehouses_idwarehouses`) REFERENCES `warehouses` (`idwarehouses`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -148,6 +151,7 @@ CREATE TABLE `deliveries` (
 
 LOCK TABLES `deliveries` WRITE;
 /*!40000 ALTER TABLE `deliveries` DISABLE KEYS */;
+INSERT INTO `deliveries` VALUES (1,1,'','2017-01-01 09:10:10',''),(2,1,'','2017-01-01 09:10:10','\0'),(3,1,'\0','2017-01-01 09:10:10','\0');
 /*!40000 ALTER TABLE `deliveries` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -164,7 +168,8 @@ SET character_set_client = utf8;
  1 AS `warehouses_idwarehouses`,
  1 AS `booked`,
  1 AS `arrive_time_estimation`,
- 1 AS `arrived`*/;
+ 1 AS `arrived`,
+ 1 AS `Ingredients`*/;
 SET character_set_client = @saved_cs_client;
 
 --
@@ -208,7 +213,7 @@ CREATE TABLE `employees` (
   KEY `fk_employees_employees_role1_idx` (`employees_role_idemployees_role`),
   KEY `salary_index` (`salary`),
   CONSTRAINT `fk_employees_employees_role1` FOREIGN KEY (`employees_role_idemployees_role`) REFERENCES `employees_role` (`idemployees_role`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -217,7 +222,7 @@ CREATE TABLE `employees` (
 
 LOCK TABLES `employees` WRITE;
 /*!40000 ALTER TABLE `employees` DISABLE KEYS */;
-INSERT INTO `employees` VALUES (1,NULL,'Jan',NULL,'Kowalski','Polska','Swidnica','Sliczna','50-100',3000.00,'2012-12-31','123123123',NULL);
+INSERT INTO `employees` VALUES (1,NULL,'Jan',NULL,'Kowalski','Polska','Swidnica','Sliczna','50-100',3000.00,'2012-12-31','123123123',NULL),(2,NULL,'Bozena',NULL,'Janiak','Polska','Dzierzoniow','Ladna','20-100',3150.00,'2013-01-03','123132143',NULL),(3,NULL,'Maciej',NULL,'Tenczynski','Polska','Wroclaw','Brzydka','30-500',2700.00,'2014-01-05','213573432',NULL),(4,NULL,'Zygmunt',NULL,'Stary','Litwa','Kowno','Lotewska','50-199',3650.00,'2013-10-08','342342257',NULL),(5,NULL,'Stanislaw',NULL,'Wojciechowski','Polska','Olesnica','Chetmanska','20-467',3200.00,'2015-02-04','564356744',NULL),(6,NULL,'Lukasz',NULL,'Andrzejewski','Polska','Katy Wroclawskie','Spoldzidelcza','73-362',3000.00,'2015-06-02','346734657',NULL),(7,NULL,'Emir',NULL,'Kebab','Turcja','Stambul','Kurdyjska','22-213',3250.00,'2015-07-08','453235734',NULL),(8,NULL,'Mbele',NULL,'Bumbum','Mozambik','Totimpak','Nieznana','00-000',2000.00,'2017-06-03','443532343',NULL),(9,NULL,'Ruslan',NULL,'Mazurkiewicz','Rosja','Wierchojansk','Lenina','30-639',4600.00,'2015-03-16','456744454',NULL),(10,NULL,'Edgar',NULL,'Poe','Anglia','Londyn','Churchilla','36-382',4560.00,'2016-11-11','745643345',NULL);
 /*!40000 ALTER TABLE `employees` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -232,7 +237,7 @@ CREATE TABLE `employees_role` (
   `idemployees_role` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(45) NOT NULL,
   PRIMARY KEY (`idemployees_role`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -241,6 +246,7 @@ CREATE TABLE `employees_role` (
 
 LOCK TABLES `employees_role` WRITE;
 /*!40000 ALTER TABLE `employees_role` DISABLE KEYS */;
+INSERT INTO `employees_role` VALUES (1,'kucharz'),(2,'kelner'),(3,'menager');
 /*!40000 ALTER TABLE `employees_role` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -304,7 +310,7 @@ CREATE TABLE `ingredients` (
   `name` varchar(64) NOT NULL,
   PRIMARY KEY (`idingredients`),
   KEY `name_index` (`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -313,6 +319,7 @@ CREATE TABLE `ingredients` (
 
 LOCK TABLES `ingredients` WRITE;
 /*!40000 ALTER TABLE `ingredients` DISABLE KEYS */;
+INSERT INTO `ingredients` VALUES (1,'Buraki'),(2,'Cebula'),(3,'Drozdze'),(4,'Maka'),(5,'Szczypior');
 /*!40000 ALTER TABLE `ingredients` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -338,7 +345,7 @@ CREATE TABLE `ingredients_instance` (
   CONSTRAINT `fk_ingredients_instance_deliveries1` FOREIGN KEY (`deliveries_iddeliveries`) REFERENCES `deliveries` (`iddeliveries`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_ingredients_instance_ingredients1` FOREIGN KEY (`ingredients_idingredients`) REFERENCES `ingredients` (`idingredients`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_ingredients_instance_meals1` FOREIGN KEY (`meals_idmeals`) REFERENCES `meals` (`idmeals`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -347,6 +354,7 @@ CREATE TABLE `ingredients_instance` (
 
 LOCK TABLES `ingredients_instance` WRITE;
 /*!40000 ALTER TABLE `ingredients_instance` DISABLE KEYS */;
+INSERT INTO `ingredients_instance` VALUES (1,1,NULL,NULL,2.00,'kg','2017-01-01'),(2,NULL,1,NULL,2.00,'kg','2017-01-01'),(3,NULL,1,NULL,2.00,'kg','2017-01-01');
 /*!40000 ALTER TABLE `ingredients_instance` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -363,7 +371,7 @@ CREATE TABLE `meals` (
   `size` varchar(45) DEFAULT NULL,
   `price` decimal(6,2) DEFAULT NULL,
   PRIMARY KEY (`idmeals`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -372,6 +380,7 @@ CREATE TABLE `meals` (
 
 LOCK TABLES `meals` WRITE;
 /*!40000 ALTER TABLE `meals` DISABLE KEYS */;
+INSERT INTO `meals` VALUES (1,'Neapolitana','S',18.00),(2,'Funghi','B',25.00),(3,'Diavola','M',22.00),(4,'Margeritha','S',18.00),(5,'Farmerska','B',27.00);
 /*!40000 ALTER TABLE `meals` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -406,7 +415,7 @@ CREATE TABLE `orders` (
   KEY `status_index` (`status`),
   KEY `table_index` (`table`),
   KEY `finished_index` (`finished_at`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -415,6 +424,7 @@ CREATE TABLE `orders` (
 
 LOCK TABLES `orders` WRITE;
 /*!40000 ALTER TABLE `orders` DISABLE KEYS */;
+INSERT INTO `orders` VALUES (1,'podac wode','2012-01-01 00:00:00',1,1,'2012-01-01 00:00:00'),(2,' ','2012-01-02 00:00:00',2,2,'2012-01-02 00:00:00'),(3,'trudny klient','2012-01-03 00:00:00',3,3,'2012-01-03 00:00:00'),(4,' ','2012-01-04 00:00:00',4,4,'2012-01-04 00:00:00'),(5,'rosol bez oczek','2012-01-05 00:00:00',5,5,'2012-01-05 00:00:00');
 /*!40000 ALTER TABLE `orders` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -442,6 +452,7 @@ CREATE TABLE `orders_has_meals` (
 
 LOCK TABLES `orders_has_meals` WRITE;
 /*!40000 ALTER TABLE `orders_has_meals` DISABLE KEYS */;
+INSERT INTO `orders_has_meals` VALUES (1,1),(2,1),(1,2);
 /*!40000 ALTER TABLE `orders_has_meals` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -465,7 +476,7 @@ CREATE TABLE `orders_parts` (
   CONSTRAINT `fk_orders_parts_employees1` FOREIGN KEY (`employees_idemployees`) REFERENCES `employees` (`idemployees`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_orders_parts_meals1` FOREIGN KEY (`meals_idmeals`) REFERENCES `meals` (`idmeals`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_orders_parts_orders1` FOREIGN KEY (`orders_idorders`) REFERENCES `orders` (`idorders`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -474,6 +485,7 @@ CREATE TABLE `orders_parts` (
 
 LOCK TABLES `orders_parts` WRITE;
 /*!40000 ALTER TABLE `orders_parts` DISABLE KEYS */;
+INSERT INTO `orders_parts` VALUES (1,1,1,'danie',1),(1,NULL,2,'podanie_do_stolika',1);
 /*!40000 ALTER TABLE `orders_parts` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -505,16 +517,15 @@ CREATE TABLE `payments` (
   `idpayment` int(11) NOT NULL AUTO_INCREMENT,
   `clients_idclients` int(11) NOT NULL,
   `bills_idbill` int(11) NOT NULL,
-  `bills_orders_idorders` int(11) NOT NULL,
   `to_pay` decimal(6,2) NOT NULL,
   `paid` bit(1) NOT NULL,
   `booked` bit(1) NOT NULL,
-  PRIMARY KEY (`idpayment`,`clients_idclients`,`bills_idbill`,`bills_orders_idorders`),
+  PRIMARY KEY (`idpayment`,`clients_idclients`,`bills_idbill`),
   KEY `fk_payments_clients1_idx` (`clients_idclients`),
-  KEY `fk_payments_bills1_idx` (`bills_idbill`,`bills_orders_idorders`),
-  CONSTRAINT `fk_payments_bills1` FOREIGN KEY (`bills_idbill`, `bills_orders_idorders`) REFERENCES `bills` (`idbill`, `orders_idorders`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  KEY `fk_payments_bills1_idx` (`bills_idbill`),
+  CONSTRAINT `fk_payments_bills1` FOREIGN KEY (`bills_idbill`) REFERENCES `bills` (`idbill`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_payments_clients1` FOREIGN KEY (`clients_idclients`) REFERENCES `clients` (`idclients`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -523,6 +534,7 @@ CREATE TABLE `payments` (
 
 LOCK TABLES `payments` WRITE;
 /*!40000 ALTER TABLE `payments` DISABLE KEYS */;
+INSERT INTO `payments` VALUES (1,1,1,30.00,'',''),(2,2,2,30.00,'','\0');
 /*!40000 ALTER TABLE `payments` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -582,7 +594,7 @@ CREATE TABLE `tockens` (
   KEY `fk_tockens_credentials1_idx` (`credentials_idcredentials`),
   KEY `expires_index` (`expires`),
   CONSTRAINT `fk_tockens_credentials1` FOREIGN KEY (`credentials_idcredentials`) REFERENCES `credentials` (`idcredentials`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -591,7 +603,7 @@ CREATE TABLE `tockens` (
 
 LOCK TABLES `tockens` WRITE;
 /*!40000 ALTER TABLE `tockens` DISABLE KEYS */;
-INSERT INTO `tockens` VALUES (1,1,'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9','2017-01-01 09:10:10');
+INSERT INTO `tockens` VALUES (1,1,'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9','2017-01-01 09:10:10'),(2,1,'ayJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ0','2018-01-01 09:10:10');
 /*!40000 ALTER TABLE `tockens` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -625,7 +637,7 @@ CREATE TABLE `warehouses` (
   `street` text NOT NULL,
   `postcode` varchar(6) NOT NULL,
   PRIMARY KEY (`idwarehouses`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -634,6 +646,7 @@ CREATE TABLE `warehouses` (
 
 LOCK TABLES `warehouses` WRITE;
 /*!40000 ALTER TABLE `warehouses` DISABLE KEYS */;
+INSERT INTO `warehouses` VALUES (1,'Polska','Wroclaw','Sliczna','11-111');
 /*!40000 ALTER TABLE `warehouses` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -658,7 +671,7 @@ UNLOCK TABLES;
 /*!50001 SET collation_connection      = utf8_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`root`@`%` SQL SECURITY DEFINER */
-/*!50001 VIEW `deliveries_details` AS select `deliveries`.`iddeliveries` AS `iddeliveries`,`deliveries`.`warehouses_idwarehouses` AS `warehouses_idwarehouses`,`deliveries`.`booked` AS `booked`,`deliveries`.`arrive_time_estimation` AS `arrive_time_estimation`,`deliveries`.`arrived` AS `arrived` from `deliveries` */;
+/*!50001 VIEW `deliveries_details` AS select `del`.`iddeliveries` AS `iddeliveries`,`del`.`warehouses_idwarehouses` AS `warehouses_idwarehouses`,`del`.`booked` AS `booked`,`del`.`arrive_time_estimation` AS `arrive_time_estimation`,`del`.`arrived` AS `arrived`,(('[' + group_concat(`II`.`idingredients_instance` separator ';')) + ']') AS `Ingredients` from (`deliveries` `del` join `ingredients_instance` `II` on((`II`.`deliveries_iddeliveries` = `del`.`iddeliveries`))) group by `del`.`iddeliveries`,`del`.`warehouses_idwarehouses`,`del`.`booked`,`del`.`arrive_time_estimation`,`del`.`arrived` */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;
@@ -798,4 +811,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-05-22  8:58:28
+-- Dump completed on 2018-05-23 20:31:12
