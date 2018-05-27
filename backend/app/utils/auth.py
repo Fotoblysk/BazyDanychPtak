@@ -78,7 +78,7 @@ async def login(request):
     password = data["password"]
 
     try:
-        db_data = (await mysql.cursor_exec(db, f'SELECT * from `credentials` where `login` = %s";', login_))[1][0]
+        db_data = (await mysql.cursor_exec(db, f'SELECT * from `credentials` where `login` = "%s";', login_))[1][0]
     except IndexError:
         if settings.DEBUG:
             print(f'No login data for {login_} in db')
@@ -90,8 +90,7 @@ async def login(request):
                                  cred_mock[data['login']]["rights"], "password": cred_mock[login]["password"]}, secret, algorithm='HS256')
             expire_data = (timedelta.timedelta.now() + timedelta(days=2)).strfitme(MYSQL_TIMEDELTA_FORMAT)
             print(expire_data)
-#            print(str(await mysql.cursor_exec(db, f"INSERT INTO `tockens` (`idtockens`, `credentials_idcredentials`, `tocken`, `expires`) VALUES ('3', '1', 'sadf', '2018-01-01 09:10:10');
-#")))
+#            print(str(await mysql.cursor_exec(db, f"INSERT INTO `tockens` (`idtockens`, `credentials_idcredentials`, `tocken`, `expires`) VALUES ('3', '1', 'sadf', '2018-01-01 09:10:10');")))
             print("Password correct - returning ")
             return web.json_response(data=response)
 
