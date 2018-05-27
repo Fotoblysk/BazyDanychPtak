@@ -1,13 +1,14 @@
 import aiomysql
 import asyncio
+import datetime
 
 
 db_name = 'db'
 
-async def cursor_exec(pool, query):
+async def cursor_exec(pool, query, *args):
     async with pool.acquire() as conn:
         async with conn.cursor() as curr:
-            init_response = await curr.execute(query)
+            init_response = await curr.execute(query, args)
             return (init_response, await curr.fetchall())
 
 
@@ -38,3 +39,6 @@ async def close_pool(app):
     print("Closing connection pool")
     app[db_name].close()
     await app[db_name].wait_closed()
+
+MYSQL_TIMEDELTA_FORMAT = "%y-%m-%d %H:%M:%S"
+

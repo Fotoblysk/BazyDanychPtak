@@ -2,7 +2,7 @@ CREATE DATABASE  IF NOT EXISTS `main` /*!40100 DEFAULT CHARACTER SET latin1 */;
 USE `main`;
 -- MySQL dump 10.13  Distrib 5.7.22, for Linux (x86_64)
 --
--- Host: 80.211.244.222    Database: main
+-- Host: localhost    Database: main
 -- ------------------------------------------------------
 -- Server version	5.7.22
 
@@ -31,7 +31,7 @@ CREATE TABLE `bills` (
   PRIMARY KEY (`idbill`,`orders_idorders`),
   KEY `fk_bills_orders1_idx` (`orders_idorders`),
   CONSTRAINT `fk_bills_orders1` FOREIGN KEY (`orders_idorders`) REFERENCES `orders` (`idorders`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -40,7 +40,7 @@ CREATE TABLE `bills` (
 
 LOCK TABLES `bills` WRITE;
 /*!40000 ALTER TABLE `bills` DISABLE KEYS */;
-INSERT INTO `bills` VALUES (1,1,123.00),(2,2,235.00),(3,3,34.00),(4,4,44.00),(5,5,87.00);
+INSERT INTO `bills` VALUES (1,1,123.00),(2,2,235.00),(3,3,34.00),(4,4,44.00),(5,5,87.00),(6,1,1000.00);
 /*!40000 ALTER TABLE `bills` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -398,6 +398,30 @@ SET character_set_client = utf8;
 SET character_set_client = @saved_cs_client;
 
 --
+-- Temporary table structure for view `order_details`
+--
+
+DROP TABLE IF EXISTS `order_details`;
+/*!50001 DROP VIEW IF EXISTS `order_details`*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+/*!50001 CREATE VIEW `order_details` AS SELECT 
+ 1 AS `idorders`,
+ 1 AS `comments`,
+ 1 AS `datetime1`,
+ 1 AS `status`,
+ 1 AS `table`,
+ 1 AS `finished_at`,
+ 1 AS `MealsIDs`,
+ 1 AS `MealsNames`,
+ 1 AS `EmployeesIds`,
+ 1 AS `EmployeesNames`,
+ 1 AS `EmployeesSurnames`,
+ 1 AS `ClientsIds`,
+ 1 AS `ClientsNames`*/;
+SET character_set_client = @saved_cs_client;
+
+--
 -- Table structure for table `orders`
 --
 
@@ -476,7 +500,7 @@ CREATE TABLE `orders_parts` (
   CONSTRAINT `fk_orders_parts_employees1` FOREIGN KEY (`employees_idemployees`) REFERENCES `employees` (`idemployees`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_orders_parts_meals1` FOREIGN KEY (`meals_idmeals`) REFERENCES `meals` (`idmeals`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_orders_parts_orders1` FOREIGN KEY (`orders_idorders`) REFERENCES `orders` (`idorders`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -749,6 +773,24 @@ UNLOCK TABLES;
 /*!50001 SET collation_connection      = @saved_col_connection */;
 
 --
+-- Final view structure for view `order_details`
+--
+
+/*!50001 DROP VIEW IF EXISTS `order_details`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = utf8 */;
+/*!50001 SET character_set_results     = utf8 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`root`@`%` SQL SECURITY DEFINER */
+/*!50001 VIEW `order_details` AS select `ORD`.`idorders` AS `idorders`,`ORD`.`comments` AS `comments`,`ORD`.`datetime1` AS `datetime1`,`ORD`.`status` AS `status`,`ORD`.`table` AS `table`,`ORD`.`finished_at` AS `finished_at`,group_concat(distinct `MEA`.`idmeals` separator ';') AS `MealsIDs`,group_concat(distinct `MEA`.`name` separator ';') AS `MealsNames`,group_concat(distinct `EMP`.`idemployees` separator ';') AS `EmployeesIds`,group_concat(distinct `EMP`.`name` separator ';') AS `EmployeesNames`,group_concat(distinct `EMP`.`surname` separator ';') AS `EmployeesSurnames`,group_concat(distinct `CLI`.`idclients` separator ';') AS `ClientsIds`,group_concat(distinct `CLI`.`name` separator ';') AS `ClientsNames` from ((((((`orders` `ORD` left join `orders_has_meals` `OHM` on((`OHM`.`orders_idorders` = `ORD`.`idorders`))) left join `meals` `MEA` on((`OHM`.`orders_idorders` = `MEA`.`idmeals`))) left join `orders_parts` `ORDP` on((`ORDP`.`orders_idorders` = `ORD`.`idorders`))) left join `employees` `EMP` on((`ORDP`.`employees_idemployees` = `EMP`.`idemployees`))) left join `clients_has_orders` `CHO` on((`CHO`.`orders_idorders` = `ORD`.`idorders`))) left join `clients` `CLI` on((`CHO`.`clients_idclients` = `CLI`.`idclients`))) group by `ORD`.`idorders` */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
 -- Final view structure for view `orders_prev`
 --
 
@@ -811,4 +853,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-05-23 20:31:12
+-- Dump completed on 2018-05-26 14:27:29

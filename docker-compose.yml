@@ -20,12 +20,15 @@ services:
             - ./frontend/app:/app
     depends_on:
       - "backend"
+
   backend:
     build: ./backend
     expose:
             - "8080"
     volumes:
             - ./backend/app:/app
+    environment:
+            DEBUG: $DEBUG
   nginx:
     build: ./nginx
     links:
