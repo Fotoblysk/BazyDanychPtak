@@ -1,4 +1,5 @@
 import settings
+import datetime
 from aiohttp import web
 from utils import mysql
 
@@ -30,3 +31,28 @@ async def order_details(request):
         if settings.DEBUG:
             print(f'No orders')
         return web.json_response(data={"status": "no_orders"})
+
+async def add_order(request):
+    db = mysql.get_mysql_endpoint(request)
+    data = (await request.json())
+    print(data)
+    newbill = data["newbill"]
+    newtable = data["newtable"]
+    newstate = data["newstate"]
+    newcomment = ""
+    date = datetime.datetime.now().strftime(mysql.MYSQL_TIMEDELTA_FORMAT)
+
+    resp = await mysql.cursor_exec(db,
+        f"INSERT INTO `main`.`orders` (`comments`, `datetime1`, `status`, `table`) VALUES (%s, %s, %s, %s);", newcomment, date, newstate, newtable)
+    print("test")
+    print(str(resp))
+    print("test1")
+    print(await mysql.cursor_exec(db, f"SELECT * FROM `orders` ORDER BY `idorders` DESC LIMIT 0, 1;"))
+    id__ = (await mysql.cursor_exec(db, f"SELECT * FROM `orders` ORDER BY `idorders` DESC LIMIT 0, 1;"))[1][0][0]
+    print("test2")
+    print(str(id__))
+    print(str(newbill))
+    await mysql.cursor_exec(db,
+        f"INSERT INTO `main`.`bills` (`money`, `orders_idorders`) VALUES (%s, %s);", newbill, id__)
+
+    return web.json_response(data={"status": "no_orders"})

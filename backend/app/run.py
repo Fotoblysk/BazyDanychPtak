@@ -23,6 +23,7 @@ def register_endpoints(app):
     app.router.add_post('/api/change', user_settings.change)
     app.router.add_post('/api/orders/ls', orders.get_orders)
     app.router.add_post('/api/orders/details', orders.order_details)
+    app.router.add_post('/api/orders/add', orders.add_order)
 
 
 print("starting backend")

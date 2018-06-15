@@ -3,7 +3,7 @@ import {withRouter} from "react-router";
 import {PageHeader, Row, Col, Pager, Table, Modal, Button} from "react-bootstrap";
 import {getTocken, isLogged} from "../func/LoginTools.jsx";
 
-let statemap = {0: "zapłacono", 1: "obsużono"};
+let statemap = {0: "zapłacono", 1: "obsłużono"};
 
 class OrderDetails extends Component {
 
@@ -161,6 +161,8 @@ class Orders extends Component {
         end: this.state.end,
       })
     }).then((response) => response.json()).then((response) => {
+      console.log("disp");
+      console.log(response.orders);
       this.setState({orders: response.orders});
     });
   }
@@ -227,25 +229,18 @@ class Orders extends Component {
                 <Button bsStyle="info" onClick={() => this.setState({orderAdd: true})}>Dodaj zamówienie</Button>
                 <Modal show={this.state.orderAdd} onHide={this.orderHide}>
                   <Modal.Header closeButton>
-                    <Modal.Title>Szczegóły zamówienia</Modal.Title>
+                    <Modal.Title>Dodawanie zamówienia</Modal.Title>
                   </Modal.Header>
                   <Modal.Body>
                     Dane:
                     <ul className="tableLeft">
                       <li>Płatność: <input type="text" name="id_pracownika" onChange={this.onBillChange}/></li>
-                      <li>Stolik: <input type="text" name="id_pracownika" onChange={this.onIdChange}/></li>
-                      <br/>
-                      <li>Stan: {this.state.orderDetails.state}</li>
-                      <li>Kwota: 100zł</li>
-                    </ul>
-                    Dania:
-                    <ul className="tableLeft">
-                      <li className="link blue">Zupa ogórkowa</li>
-                      <li className="link blue">Zupa pomidorowa</li>
+                      <li>Stolik: <input type="text" name="id_pracownika" onChange={this.onTableChange}/></li>
+                      <li>Stan: <input type="text" name="id_pracownika" onChange={this.onStateChange}/></li>
                     </ul>
                   </Modal.Body>
                   <Modal.Footer>
-                    <Button bsStyle="success" onClick={this.props.submitOrder}>Zrealizowano</Button>
+                    <Button bsStyle="success" onClick={this.submitOrder}>Zrealizowano</Button>
                   </Modal.Footer>
                 </Modal>
               </div>
@@ -258,10 +253,34 @@ class Orders extends Component {
   }
 
   submitOrder = (e) => {
+    fetch("/api/orders/add", {
+      method: "POST",
+      headers: {
+        "Accept": "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        tocken: getTocken(),
+        newbill: this.state.newbill,
+        newtable: this.state.newtable,
+        newstate: this.state.newstate,
+      })
+    }).then((response) => response.json()).then((response) => {
+      console.log(response);
+      this.orderHide();
+    });
   }
 
   onBillChange = (e) => {
     this.setState({newbill: e.target.value});
+  }
+
+  onTableChange = (e) => {
+    this.setState({newtable: e.target.value});
+  }
+
+  onStateChange = (e) => {
+    this.setState({newstate: e.target.value});
   }
 }
 
