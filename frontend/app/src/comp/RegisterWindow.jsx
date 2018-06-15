@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, {Component} from "react";
 
 class RegisterWindow extends Component {
 
@@ -14,6 +14,7 @@ class RegisterWindow extends Component {
         login: this.state.login,
         password: this.state.password,
         email: this.state.email,
+        id_pracownika: this.state.id_pracownika,
       })
     });
   }
@@ -26,7 +27,7 @@ class RegisterWindow extends Component {
 
   onIdChange = (e) => {
     this.setState({
-      login: e.target.value
+      id_pracownika: e.target.value
     });
   }
 
@@ -51,17 +52,17 @@ class RegisterWindow extends Component {
   render() {
     return (
       <form onSubmit={this.onSubmitClick}>
-          Id pracownika:<br />
-          <input type="text" name="id" onChange={this.onIdChange} /><br />
-        Login:<br />
-        <input type="text" name="login" onChange={this.onLoginChange} /><br />
-        Rola:<br />
-        <input type="text" name="login" onChange={this.onRolaChange} /><br />
-        Email:<br />
-        <input type="text" name="email" onChange={this.onEmailChange} /><br />
-        Password:<br />
-        <input type="password" name="password" onChange={this.onPasswordChange} /><br />
-        <input type="submit" value="Submit" />
+        Id pracownika:<br/>
+        <input type="text" name="id_pracownika" onChange={this.onIdChange}/><br/>
+        Login:<br/>
+        <input type="text" name="login" onChange={this.onLoginChange}/><br/>
+        Rola:<br/>
+        <input type="text" name="login" onChange={this.onRolaChange}/><br/>
+        Email:<br/>
+        <input type="text" name="email" onChange={this.onEmailChange}/><br/>
+        Password:<br/>
+        <input type="password" name="password" onChange={this.onPasswordChange}/><br/>
+        <input type="submit" value="Submit"/>
       </form>
     );
   }

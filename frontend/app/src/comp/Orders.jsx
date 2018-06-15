@@ -1,49 +1,99 @@
-import React, { Component } from "react";
-import { withRouter } from "react-router";
-import {Row, Col, Pager, Table, Modal, Button } from "react-bootstrap";
+import React, {Component} from "react";
+import {withRouter} from "react-router";
+import {PageHeader, Row, Col, Pager, Table, Modal, Button} from "react-bootstrap";
+import {getTocken, isLogged} from "../func/LoginTools.jsx";
 
+let statemap = {0: "zapłacono", 1: "obsużono"};
 
 class OrderDetails extends Component {
 
   constructor(props) {
     super(props);
+    console.log("dupa");
+    if (!isLogged())
+      window.history.pushState("", "", "/nli/login"); // TODO not good
+    this.state = {orderDetails: {state: "loading..."}};
   }
-  
+
+  getDetails = () => {
+    fetch("/api/orders/details", {
+      method: "POST",
+      headers: {
+        "Accept": "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        tocken: getTocken(),
+        id: this.props.currentId,
+      })
+    }).then((response) => response.json()).then((response) => {
+      console.log(response);
+      this.setState({orderDetails: response.details});
+    });
+  }
+
+  componentDidMount() {
+    if (this.props.details) {
+      this.initDataUpdater = setTimeout(this.getDetails());
+      this.dataUpdater = setInterval(this.getDetails, 2000);
+    }
+  }
+
+  componentWillUnmount() {
+    if (this.initDataUpdater)
+      clearTimeout(this.initDataUpdater);
+    if (this.dataUpdater)
+      clearInterval(this.dataUpdater);
+  }
+
+  componentDidUpdate() {
+    if (this.props.details && !this.dataUpdater) {
+      this.initDataUpdater = setTimeout(this.getDetails());
+      this.dataUpdater = setInterval(this.getDetails, 2000);
+    } else if (!this.props.details) {
+      if (this.initDataUpdater)
+        clearTimeout(this.initDataUpdater);
+      if (this.dataUpdater)
+        clearInterval(this.dataUpdater);
+    }
+  }
+
+
   render() {
     return (
-		  <div>
+      <div>
         <Modal show={this.props.details} onHide={this.props.hide}>
           <Modal.Header closeButton>
             <Modal.Title>Szczegóły zamówienia</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-	    Dane:
+            Dane:
             <ul className="tableLeft">
-              <li>Nr: 1</li>
+              <li>Nr: {this.props.currentId}</li>
               <li>Płatność: 100zł</li>
               <li>Stan Płatności: Zrealizowano</li>
               <li>Stolik: 5</li>
-              <li>Stan: Czeka na zamówienie</li>
+              <li>Stan: {this.state.orderDetails.state}</li>
               <li>Kwota: 100zł</li>
             </ul>
-            Dania: 
+            Dania:
             <ul className="tableLeft">
               <li className="link blue">Zupa ogórkowa</li>
               <li className="link blue">Zupa pomidorowa</li>
-	    </ul>
-            Przypisani pracownicy: 
+            </ul>
+            Przypisani pracownicy:
             <ul className="tableLeft">
               <li className="link blue">Joanna Kowalsa</li>
               <li className="link blue">Jan Prusak</li>
-	    </ul>
-	    Uwagi:
+            </ul>
+            Uwagi:
             <ul className="tableLeft">
-	    <li><span>brak</span></li>
-	    </ul>
-	    Klienci
+              <li><span>brak</span></li>
+            </ul>
+            Klienci
             <ul className="tableLeft">
-	    <li className="link blue">Jarosław</li>
-	    </ul>
+              <li className="link blue">Jarosław</li>
+            </ul>
           </Modal.Body>
           <Modal.Footer>
             <Button bsStyle="success" onClick={this.props.hide}>Zrealizowano</Button>
@@ -51,7 +101,23 @@ class OrderDetails extends Component {
             <Button bsStyle="warning" onClick={this.props.hide}>Zmień zamówienie</Button>
           </Modal.Footer>
         </Modal>
-		  </div>
+      </div>
+    );
+  }
+}
+
+class OrderLine extends Component {
+
+  render() {
+    return (
+      <tr onClick={() => this.props.detailsFn(this.props.data.id)} className="link">
+        <td>{this.props.data.id}</td>
+        <td>{this.props.data.paid_money} / {this.props.data.bill_money}</td>
+        <td>{this.props.data.table}</td>
+        <td>{statemap[this.props.data.state]}</td>
+        <td>{this.props.data.order_date}</td>
+        <td>{this.props.data.finish_date}</td>
+      </tr>
     );
   }
 }
@@ -59,61 +125,143 @@ class OrderDetails extends Component {
 class Orders extends Component {
   constructor(props) {
     super(props);
-    this.state = {details: false};
+    if (!isLogged())
+      window.history.pushState("", "", "/nli/login"); // TODO not good
+    this.state = {details: false, currentId: null, orderAdd: false};
   }
-  showDetails = () => {
-    this.setState({details: true});
+
+  componentDidMount = () => {
+    this.initDataUpdater = setTimeout(this.getOrders);
+    this.dataUpdater = setInterval(this.getOrders, 2000);
+  }
+
+  componentWillUnmount() {
+    clearTimeout(this.initDataUpdater);
+    clearInterval(this.dataUpdater);
+  }
+
+  showDetails = (id) => {
+    this.setState({details: true, currentId: id});
   }
 
   hideDetails = () => {
     this.setState({details: false});
   }
 
+  getOrders = () => { // TODO DRY
+    fetch("/api/orders/ls", {
+      method: "POST",
+      headers: {
+        "Accept": "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        tocken: getTocken(),
+        start: this.state.start,
+        end: this.state.end,
+      })
+    }).then((response) => response.json()).then((response) => {
+      this.setState({orders: response.orders});
+    });
+  }
+
+  ordersList = (orders) => { // TODO DRY
+    if (orders == undefined)
+      return <tr>
+        <td>loading...</td>
+      </tr>
+    let norders = orders.map((el) => {
+      return (
+        <OrderLine key={el.id} data={el}
+                   detailsFn={this.showDetails}/>
+      )
+    })
+    return norders;
+  }
+  orderHide = () => {
+    this.setState({orderAdd: false});
+  }
+
   render() {
+    console.log(this.state.orders);
+    console.log(this.state.details);
+    console.log(this.state.currentId);
     return (
-		<div>
-  <Row>
-<Col xs={0} md={2}> </Col>
-<Col xs={12} md={8}>
-	    <div className="centerO">
-	    <div className="centerI">
-            <Button bsStyle="info" >Dodaj zamówienie</Button>
-	    </div>
-	    </div>
-      <OrderDetails hide={this.hideDetails} details={this.state.details}/>
-			<Table responsive hover>
-				<thead className="tableLeft">
-					<tr>
-						<th>Nr.</th>
-						<th>Rachunek</th>
-						<th>Stan Płatności</th>
-						<th>Stolik</th>
-						<th>Stan</th>
-					</tr>
-				</thead>
-				<tbody className="tableLeft">
-					<tr onClick={this.showDetails} className="link">
-						<td>1</td>
-						<td>100zł</td>
-						<td>Zrealizowano</td>
-						<td>5</td>
-						<td>Czeka na zamówienie</td>
-					</tr>
-				</tbody>
-			</Table>
-<Pager>
-  <Pager.Item disabled previous href="#">
-    Previous
-  </Pager.Item> 
-  <Pager.Item disabled next href="#">
-    Next
-  </Pager.Item>
-</Pager>
-</Col>
-<Col xs={0} md={2}> </Col>
-  </Row>
-		</div>
+      <div>
+        <Row>
+          <Col xs={0} md={2}> </Col>
+          <Col xs={12} md={8}>
+            <PageHeader>Zamówienia<br/>
+              <small>Przeglądanie złożonych zamówień</small>
+            </PageHeader>
+            <OrderDetails hide={this.hideDetails} details={this.state.details} currentId={this.state.currentId}/>
+            <Table responsive hover>
+              <thead className="tableLeft">
+              <tr>
+                <th>Nr.</th>
+                <th>Stan Płatności</th>
+                <th>Stolik</th>
+                <th>Stan</th>
+                <th>Data złożenia</th>
+                <th>Data zakończenia</th>
+              </tr>
+              </thead>
+              <tbody className="tableLeft">
+              {
+                // <OrderLine data={{id: 1, name: "dupa1", bill: "dupa", paymentState: "dupa", table: "dupa", state: "dupa"}}
+                //     onClick={this.showDetails}/>
+              }
+              {this.ordersList(this.state.orders)}
+              </tbody>
+            </Table>
+            <Pager>
+              <Pager.Item disabled previous href="#">
+                Previous
+              </Pager.Item>
+              <Pager.Item disabled next href="#">
+                Next
+              </Pager.Item>
+            </Pager>
+            <div className="centerO">
+              <div className="centerI">
+                <Button bsStyle="info" onClick={() => this.setState({orderAdd: true})}>Dodaj zamówienie</Button>
+                <Modal show={this.state.orderAdd} onHide={this.orderHide}>
+                  <Modal.Header closeButton>
+                    <Modal.Title>Szczegóły zamówienia</Modal.Title>
+                  </Modal.Header>
+                  <Modal.Body>
+                    Dane:
+                    <ul className="tableLeft">
+                      <li>Płatność: <input type="text" name="id_pracownika" onChange={this.onBillChange}/></li>
+                      <li>Stolik: <input type="text" name="id_pracownika" onChange={this.onIdChange}/></li>
+                      <br/>
+                      <li>Stan: {this.state.orderDetails.state}</li>
+                      <li>Kwota: 100zł</li>
+                    </ul>
+                    Dania:
+                    <ul className="tableLeft">
+                      <li className="link blue">Zupa ogórkowa</li>
+                      <li className="link blue">Zupa pomidorowa</li>
+                    </ul>
+                  </Modal.Body>
+                  <Modal.Footer>
+                    <Button bsStyle="success" onClick={this.props.submitOrder}>Zrealizowano</Button>
+                  </Modal.Footer>
+                </Modal>
+              </div>
+            </div>
+          </Col>
+          <Col xs={0} md={2}> </Col>
+        </Row>
+      </div>
     );
+  }
+
+  submitOrder = (e) => {
+  }
+
+  onBillChange = (e) => {
+    this.setState({newbill: e.target.value});
   }
 }
 

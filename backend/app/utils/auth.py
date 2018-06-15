@@ -3,27 +3,36 @@ from aiohttp import web
 import json
 import jwt
 import time
+import datetime
 import aiomysql
 import hashlib
 from utils import mysql
+from utils import utils
+import os
+import crypt
 secret = "2t4m8hbBgsQ2qJFi4BPmHQFoGqwINiZO"
 tockens_mock = set()
 
 
-def have_one_of_rights(right_set, right):
-    if right in right_set:
-        return True
-    return False
+def login_required(fn):
+    if settings.DEBUG:
+        print("Checking rights")
+    async def fn_wraper(*args, **kwargs):
+        try:
+            data = (await args[0].json())
+            jwt.decode(data["tocken"], secret, algorithm='HS256')
+            return await fn(*args, **kwargs)
+        except jwt.exceptions.DecodeError:
+            raise web.HTTPUnauthorized()
+    return fn_wraper
 
 def check_rights(fn):
     if settings.DEBUG:
         print("Checking rights")
-
     async def fn_wraper(*args, **kwargs):
         try:
             data = (await args[0].json())
-            if not (sstr(jwt.decode(data["tocken"], secret, algorithm='HS256'))
-                    == data["rights"]):
+            if not str(jwt.decode(data["tocken"], secret, algorithm='HS256')) == data["rights"]:
                 raise jwt.exceptions.DecodeError
             return await fn(*args, **kwargs)
         except jwt.exceptions.DecodeError:
@@ -75,27 +84,33 @@ async def login(request):
 
     db = mysql.get_mysql_endpoint(request)
     login_ = data["login"]
-    password = data["password"]
+
+    utils.validate_login(login_)
+
+    password_ = data["password"]
 
     try:
-        db_data = (await mysql.cursor_exec(db, f'SELECT * from `credentials` where `login` = "%s";', login_))[1][0]
+        db_data = (await mysql.cursor_exec(db, f'SELECT `password_hash`, `salt`, `idcredentials`  from `credentials` where `login` = %s;', login_))[1][0]
     except IndexError:
         if settings.DEBUG:
             print(f'No login data for {login_} in db')
         return web.json_response(data={"status": "login_invalid"})
 
-    if password_hash == db_data[4]:
-        if settings.DEBUG:
-            tocken = jwt.encode({"login": data['login'], "rights":
-                                 cred_mock[data['login']]["rights"], "password": cred_mock[login]["password"]}, secret, algorithm='HS256')
-            expire_data = (timedelta.timedelta.now() + timedelta(days=2)).strfitme(MYSQL_TIMEDELTA_FORMAT)
-            print(expire_data)
-#            print(str(await mysql.cursor_exec(db, f"INSERT INTO `tockens` (`idtockens`, `credentials_idcredentials`, `tocken`, `expires`) VALUES ('3', '1', 'sadf', '2018-01-01 09:10:10');")))
-            print("Password correct - returning ")
-            return web.json_response(data=response)
-
-
-    response={}
+    db_password_hash = db_data[0]
+    db_password_salt = db_data[1]
+    password_hash = hashlib.md5((password_ + db_password_salt).encode())
+    db_credid = db_data[2]
+    response=None
+    if password_hash.hexdigest() == db_password_hash:
+        expire_data = (datetime.datetime.now() + datetime.timedelta(days=2)).strftime(mysql.MYSQL_TIMEDELTA_FORMAT)
+        tocken = jwt.encode({"login": login_, "rights": "menager", "password_hash": db_password_hash, "expires": expire_data}, secret, algorithm='HS256')
+        tocken_md5 = hashlib.md5(tocken).hexdigest()
+        await mysql.cursor_exec(db,
+            f"INSERT INTO `main`.`tockens` (`credentials_idcredentials`, `tocken`, `expires`) VALUES ('{db_credid}', '{tocken_md5}', '{expire_data}');")
+        print("Password correct - returning ")
+        response={"rights": "menager", "status": "Ok", "tocken": tocken.decode(), "username": login_}
+    else:
+        response={"status": "bad_password"}
 
     return web.json_response(data=response)
 
@@ -107,9 +122,14 @@ async def register(request):
     login = data["login"]
     password = data["password"]
     email = data["email"]
-    print("login: " + login)
-    print("password: " + password)
-    print("email: " + email)
-    userData = json.dumps({"password": password,
-                           "email": email})
+    id_pracownika = data["id_pracownika"]
+    utils.validate_int(id_pracownika)
+    utils.validate_email(email)
+    utils.validate_login(login)
+    salt = crypt.mksalt(crypt.METHOD_MD5)
+    password_hash = hashlib.md5((password + salt).encode()).hexdigest()
+    db = mysql.get_mysql_endpoint(request)
+    await mysql.cursor_exec(db,
+        f"INSERT INTO `main`.`credentials` (`employees_idemployees`, `login`, `email`, `password_hash`, `active`, `salt`) VALUES (%s, %s, %s, %s, '0', '{salt}');", id_pracownika, login, email, password_hash)
+
     return web.Response(text="Ok")

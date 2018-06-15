@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import "./App.css";
-import {BrowserRouter as Router, Route} from "react-router-dom";
+import {BrowserRouter, Route} from "react-router-dom";
 import NLIApp from "./comp/NLIApp.jsx";
 import LIApp from "./comp/LIApp.jsx";
 
@@ -15,12 +15,12 @@ class App extends Component {
 
   render() {
     return (
-      <Router>
+      <BrowserRouter>
         <div className="App">
           <Route path="/nli" component={NLIApp} />
           <Route path="/li" component={LIApp} />
         </div>
-      </Router>
+      </BrowserRouter>
     );
   }
 }

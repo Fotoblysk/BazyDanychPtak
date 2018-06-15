@@ -8,7 +8,15 @@ db_name = 'db'
 async def cursor_exec(pool, query, *args):
     async with pool.acquire() as conn:
         async with conn.cursor() as curr:
-            init_response = await curr.execute(query, args)
+            print("args:")
+            print(str([i for i in args]))
+            if args == ():
+                print("ooo")
+                init_response = await curr.execute(query)
+            else:
+                init_response = await curr.execute(query, args)
+            await conn.commit()
+
             return (init_response, await curr.fetchall())
 
 

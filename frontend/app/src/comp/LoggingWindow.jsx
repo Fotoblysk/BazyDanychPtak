@@ -1,5 +1,5 @@
-import React, { Component } from "react";
-import { authStore } from "../stores/authStore.jsx";
+import React, {Component} from "react";
+import {authStore} from "../stores/authStore.jsx";
 import PropTypes from "prop-types";
 
 class LoggingWindow extends Component {
@@ -7,7 +7,7 @@ class LoggingWindow extends Component {
   constructor(props) {
     super(props);
     let state = {resp: "", jwt: authStore.getState().jwt};
-    if(state.jwt !== "")
+    if (state.jwt !== "")
       state.onTopOfFormMsg = "Your session has expired please log in to continue.";
     this.state = state;
   }
@@ -24,17 +24,22 @@ class LoggingWindow extends Component {
         login: this.state.login,
         password: this.state.password,
       })
-    }).then( (response) => {
+    }).then((response) => {
       return response.json()
-    }).then( (response) => {
-      if(response.status ===  "Ok"){
-        authStore.dispatch({type: "", jwt: response.tocken, rights: response.rights, username: response.username});
+    }).then((response) => {
+      if (response.status === "Ok") {
+        authStore.dispatch({
+          type: "",
+          jwt: response.tocken,
+          rights: response.rights,
+          username: response.username
+        });
         this.setState({
           resp: response.status,
           jwt: authStore.getState().jwt
         });
         this.props.history.push("/li/dashboard");
-      }else{
+      } else {
         authStore.dispatch({type: "", jwt: ""});
         this.setState({
           resp: response.status,
@@ -61,13 +66,13 @@ class LoggingWindow extends Component {
     return (
       <div>
         <form onSubmit={this.onSubmitClick}>
-          Login:<br />
-          <input type="text" name="login" onChange={this.onLoginChange} /><br />
-          Hasło:<br />
-          <input type="password" name="password" onChange={this.onPasswordChange} /><br />
-          <input type="submit" value="Zatwierdź" />
+          Login:<br/>
+          <input type="text" name="login" onChange={this.onLoginChange}/><br/>
+          Hasło:<br/>
+          <input type="password" name="password" onChange={this.onPasswordChange}/><br/>
+          <input type="submit" value="Zatwierdź"/>
         </form>
-        {this.state.resp} <br />
+        {this.state.resp} <br/>
         {this.state.jwt}
       </div>
     );

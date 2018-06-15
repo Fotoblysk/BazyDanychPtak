@@ -4,6 +4,8 @@ import time
 import asyncio
 from contextlib import suppress
 import pymysql
+import user_settings
+import orders
 
 def setup_db(app):
     mysql_up = False
@@ -18,6 +20,9 @@ def setup_db(app):
 def register_endpoints(app):
     app.router.add_post('/api/login', auth.login)
     app.router.add_post('/api/register', auth.register)
+    app.router.add_post('/api/change', user_settings.change)
+    app.router.add_post('/api/orders/ls', orders.get_orders)
+    app.router.add_post('/api/orders/details', orders.order_details)
 
 
 print("starting backend")
